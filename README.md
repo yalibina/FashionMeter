@@ -25,4 +25,4 @@ Our training is done in jupyter notebooks, so feel free to download [fashion_met
 
 ## Inference
 
-To use our model for inference, use the (inference link) notebook.
+To use our model for inference on your own photos, use the [TBD] notebook.
