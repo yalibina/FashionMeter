@@ -15,7 +15,6 @@ FashionMeter is a deep learning project created for fashion style image classifi
     * [fashion_meter.ipynb](src/training/fashion_meter.ipynb) - FashionMeter model training
 * [examples](examples) - contains example notebooks for inference
 * [README.md](README.md) - you are here
-* [requirements.txt](requirements.txt) - library requirements that we use
 
 ## Train your own model
 
