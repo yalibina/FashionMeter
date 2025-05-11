@@ -1,0 +1,11 @@
+# config.yaml
+N_EPOCHS: 10
+LR: 0.001
+WD: 0.01
+BATCH_SIZE: 64
+NUM_WORKERS: 2
+DATA_ROOT: data/downloaded_images
+CHECKPOINT_DIR: ../checkpoints/
+PROJECT_NAME: fashion_meter
+MODEL_NAME: google/vit-base-patch16-224-in21k
+TRAIN_VAL_SPLIT: 0.8

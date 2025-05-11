@@ -4,6 +4,7 @@
 # Dataset
 
 src/training/mmls_data.zip
+src/data/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -556,4 +557,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/python,windows,vs
+# End of https://www.toptal.com/developers/gitignore/api/python,windows,vssrc/dataload/mmls_data.zip
