@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install dependencies
-pip install -r req_mac.txt
+pip install -r requirements.txt
 
 # Download and extract dataset
 cd src/dataload
