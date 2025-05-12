@@ -6,14 +6,14 @@ from transformers import ViTForImageClassification
 from sklearn.metrics import f1_score, fbeta_score
 
 class LitViT(pl.LightningModule):
-    def __init__(self, num_labels, id2label, label2id, class_weights, lr=1e-3, weight_decay=1e-2):
+    def __init__(self, num_labels, id2label, label2id, class_weights, lr=1e-3, weight_decay=1e-2, model_name='google/vit-base-patch16-224-in21k'):
         super(LitViT, self).__init__()
         self.num_labels = num_labels
         self.id2label = id2label
         self.label2id = label2id
         self.class_weights = class_weights
         self.vit = ViTForImageClassification.from_pretrained(
-            'google/vit-base-patch16-224-in21k',
+            model_name,
             num_labels=self.num_labels,
             id2label=self.id2label,
             label2id=self.label2id,

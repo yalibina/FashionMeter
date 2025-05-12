@@ -22,6 +22,7 @@ LR = config['LR']
 WD = config['WD']
 CHECKPOINT_DIR = config['CHECKPOINT_DIR']
 PROJECT_NAME = config['PROJECT_NAME']
+MODEL_NAME = config['MODEL_NAME']
 
 wandb_logger = WandbLogger(
     project=PROJECT_NAME,
@@ -45,7 +46,8 @@ model = LitViT(
     label2id=label2ids,
     class_weights=class_weights,
     lr=LR,
-    weight_decay=WD
+    weight_decay=WD,
+    model_name=MODEL_NAME
 )
 
 trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
