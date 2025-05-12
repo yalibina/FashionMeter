@@ -4,7 +4,7 @@ LR: 0.001
 WD: 0.01
 BATCH_SIZE: 64
 NUM_WORKERS: 2
-DATA_ROOT: data/downloaded_images
+DATA_ROOT: src/data/downloaded_images
 CHECKPOINT_DIR: ../checkpoints/
 PROJECT_NAME: fashion_meter
 MODEL_NAME: google/vit-base-patch16-224-in21k
