@@ -63,7 +63,7 @@ class WrapDataset(torch.utils.data.Dataset):
 train_dataset = WrapDataset(train_subset, transform=train_transform)
 val_dataset = WrapDataset(val_subset, transform=val_transform)
 
-feature_extractor = ViTImageProcessor.from_pretrained(MODEL_NAME)
+feature_extractor = ViTImageProcessor.from_pretrained(MODEL_NAME, do_rescale=False)
 
 def collate_fn(batch):
     images = [item['image'] for item in batch]
