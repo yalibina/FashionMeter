@@ -65,3 +65,18 @@ class LitViT(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.AdamW(self.parameters(), lr=self.hparams["lr"], weight_decay=self.hparams["weight_decay"])
+
+class LitViTQuantized(pl.LightningModule):
+    def __init__(self, quantized_model, num_labels):
+        super().__init__()
+        self.vit = quantized_model
+        self.num_labels = num_labels
+
+    def forward(self, pixel_values):
+        return self.vit(pixel_values=pixel_values).logits
+
+    def predict_step(self, batch, batch_idx):
+            pixel_values = batch["pixel_values"]
+            logits = self(pixel_values)
+            preds = torch.argmax(logits, dim=1)
+            return preds
