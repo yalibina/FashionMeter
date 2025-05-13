@@ -26,8 +26,8 @@ label2ids = {label: id for id, label in ids2label.items()}
 
 train_size = int(TRAIN_VAL_SPLIT * len(dataset))
 val_size = len(dataset) - train_size
-train_subset, val_subset = random_split(dataset, [train_size, val_size])
-
+generator = torch.Generator().manual_seed(42)
+train_subset, val_subset = random_split(dataset, [train_size, val_size], generator=generator)
 train_labels = [dataset.targets[i] for i in train_subset.indices]
 class_weights = compute_class_weight('balanced', classes=np.unique(train_labels), y=train_labels)
 class_weights = torch.tensor(class_weights, dtype=torch.float32)

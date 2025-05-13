@@ -1,6 +1,6 @@
 # config.yaml
 N_EPOCHS: 10
-LR: 0.001
+LR: 0.00001
 WD: 0.01
 BATCH_SIZE: 64
 NUM_WORKERS: 2
