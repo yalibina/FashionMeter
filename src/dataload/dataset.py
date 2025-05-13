@@ -2,6 +2,7 @@ import torch
 from torchvision.datasets import ImageFolder
 from torch.utils.data import random_split, DataLoader
 from transformers import ViTImageProcessor
+import torchvision.transforms as T
 import numpy as np
 from sklearn.utils.class_weight import compute_class_weight
 import yaml
@@ -31,19 +32,36 @@ train_labels = [dataset.targets[i] for i in train_subset.indices]
 class_weights = compute_class_weight('balanced', classes=np.unique(train_labels), y=train_labels)
 class_weights = torch.tensor(class_weights, dtype=torch.float32)
 
+# Define augmentations for training
+train_transform = T.Compose([
+    T.RandomResizedCrop(224, scale=(0.8, 1.0)),
+    T.RandomHorizontalFlip(),
+    T.RandomRotation(15),
+    T.ToTensor(),
+])
+
+# Validation: just resize and to tensor
+val_transform = T.Compose([
+    T.Resize((224, 224)),
+    T.ToTensor(),
+])
+
 class WrapDataset(torch.utils.data.Dataset):
-    def __init__(self, subset):
+    def __init__(self, subset, transform=None):
         self.subset = subset
+        self.transform = transform
 
     def __len__(self):
         return len(self.subset)
 
     def __getitem__(self, idx):
         image, label = self.subset[idx]
+        if self.transform:
+            image = self.transform(image)
         return {'image': image, 'label': label}
 
-train_dataset = WrapDataset(train_subset)
-val_dataset = WrapDataset(val_subset)
+train_dataset = WrapDataset(train_subset, transform=train_transform)
+val_dataset = WrapDataset(val_subset, transform=val_transform)
 
 feature_extractor = ViTImageProcessor.from_pretrained(MODEL_NAME)
 

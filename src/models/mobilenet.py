@@ -4,6 +4,7 @@ import pytorch_lightning as pl
 from torchvision.models import mobilenet_v2
 from torch.nn import functional as F
 from src.models.vit import LitViT
+from sklearn.metrics import f1_score, fbeta_score
 
 class MobileNetDistill(pl.LightningModule):
     def __init__(self, num_labels, class_weights, teacher_ckpt_path, id2label, label2id, lr=1e-3, weight_decay=1e-2, alpha=0.5, temperature=4.0):
@@ -35,24 +36,35 @@ class MobileNetDistill(pl.LightningModule):
         kl_loss = F.kl_div(log_student, soft_teacher, reduction='batchmean') * (self.temperature ** 2)
         return self.alpha * ce_loss + (1 - self.alpha) * kl_loss
 
-    def training_step(self, batch, batch_idx):
+    def common_step(self, batch, batch_idx):
         x = batch['pixel_values']
         y = batch['labels']
         student_logits = self.student(x)
         with torch.no_grad():
             teacher_logits = self.teacher(x)
         loss = self.distillation_loss(student_logits, teacher_logits, y)
+        preds = student_logits.argmax(dim=1).detach().cpu().numpy()
+        labels_np = y.detach().cpu().numpy()
+        accuracy = (preds == labels_np).mean()
+        f1 = f1_score(labels_np, preds, average='macro')
+        beta = 0.5
+        f_beta = fbeta_score(labels_np, preds, beta=beta, average='macro')
+        return loss, accuracy, f1, f_beta
+
+    def training_step(self, batch, batch_idx):
+        loss, accuracy, f1, f_beta = self.common_step(batch, batch_idx)
         self.log('train/loss', loss)
+        self.log('train/accuracy', accuracy)
+        self.log('train/f1', f1)
+        self.log('train/fbeta', f_beta)
         return loss
 
     def validation_step(self, batch, batch_idx):
-        x = batch['pixel_values']
-        y = batch['labels']
-        student_logits = self.student(x)
-        with torch.no_grad():
-            teacher_logits = self.teacher(x)
-        loss = self.distillation_loss(student_logits, teacher_logits, y)
-        self.log('val/loss', loss, on_epoch=True)
+        loss, accuracy, f1, f_beta = self.common_step(batch, batch_idx)
+        self.log('val/loss_epoch', loss, on_epoch=True)
+        self.log('val/accuracy_epoch', accuracy, on_epoch=True)
+        self.log('val/f1_epoch', f1, on_epoch=True)
+        self.log('val/fbeta_epoch', f_beta, on_epoch=True)
         return loss
 
     def configure_optimizers(self):
