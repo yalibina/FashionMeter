@@ -12,7 +12,7 @@ from src.dataload.dataset import (
     NUM_LABELS
 )
 from src.models.vit import LitViT
-
+pl.seed_everything(42, workers=True)
 # Load config
 with open(os.path.join(os.path.dirname(__file__), '../../config.yaml'), 'r') as f:
     config = yaml.safe_load(f)
